@@ -4,8 +4,9 @@ import time
 import logging
 from typing import Dict, Any, List, Optional
 
-import requests
 import runpod
+
+# NOTE: 'requests' imported inside functions to avoid import order issues with CUDA
 
 # Add src to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
@@ -36,6 +37,7 @@ def fetch_warmup_params(callback_url: str, job_id: str) -> Optional[Dict[str, An
     Fetch generation params from MLNode callback URL.
     Returns params dict if available, None if still waiting.
     """
+    import requests
     try:
         url = f"{callback_url}/warmup/params"
         response = requests.get(
@@ -60,6 +62,7 @@ def send_batch_to_callback(callback_url: str, batch: Dict[str, Any], node_id: in
     Send a generated batch to the callback URL.
     Used in warmup mode where DelegationController is not polling.
     """
+    import requests
     try:
         url = f"{callback_url}/generated"
         payload = {
@@ -82,6 +85,7 @@ def notify_generation_complete(callback_url: str, job_id: str, stats: Dict[str, 
     """
     Notify MLNode that generation is complete so it can stop the warmup job.
     """
+    import requests
     try:
         url = f"{callback_url}/warmup/complete"
         payload = {
